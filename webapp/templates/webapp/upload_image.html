@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image and View Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 2px solid #28a745;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="file"]:focus {
+            border-color: #218838;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .back-button {
+            background-color: #007bff;
+            margin-top: 10px;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+        .frame-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .frame {
+            width: 30%;
+            text-align: center;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .frame img {
+            max-width: 100%;
+            height: auto;
+            transition: transform 0.3s;
+        }
+        .frame img:hover {
+            transform: scale(1.05);
+        }
+        .error {
+            text-align: center;
+            color: red;
+            margin: 15px 0;
+        }
+        @media (max-width: 768px) {
+            .frame-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .frame {
+                width: 80%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Upload an Image</h1>
+    
+    <!-- Error Message -->
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    
+    <!-- Form to upload file -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="image" accept=".bmp,.jpg,.jpeg" required>
+        <br><br>
+        <button type="submit">Upload</button>
+    </form>
+    
+    {% if original_image or anomaly_image or result_image %}
+    <form action="{% url 'login' %}" method="GET">
+        <button class="back-button" type="submit">Back to Login</button>
+    </form>
+    {% endif %}
+
+    <!-- Display the Images in the specified order -->
+    <div class="frame-container">
+        {% if original_image %}
+        <div class="frame">
+            <h2>Original Image</h2>
+            <img src="{{ original_image }}" alt="Original Image">
+        </div>
+        {% endif %}
+        
+        {% if heatmap_image %}
+        <div class="frame">
+            <h2>Anomaly Image</h2>
+            <img src="{{ heatmap_image }}" alt="Anomaly Image">
+        </div>
+        {% endif %}
+        
+        {% if result_image %}
+        <div class="frame">
+            <h2>Result Image</h2>
+            <img src="{{ result_image }}" alt="Result Image">
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>
